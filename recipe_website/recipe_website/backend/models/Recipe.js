@@ -42,13 +42,13 @@ const recipeSchema = new mongoose.Schema({
     healthBenefits: String,
     ratings: {
         averageRating: Number,
-        details: [ratingSchema] // Using the defined ratingSchema here
+        details: [ratingSchema] 
     },
     spoonacularScore: {
-        type: Number, // Add the spoonacularScore field
+        type: Number, 
     },
     pricePerServing: {
-        type: Number // Add the pricePerServing field
+        type: Number 
     }
 });
 
