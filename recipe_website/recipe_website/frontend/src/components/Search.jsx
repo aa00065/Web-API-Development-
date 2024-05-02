@@ -14,44 +14,58 @@ const Search = () => {
 
   return (
     <Form onSubmit={submitHandler}>
-      <div>
-        <FaSearch />
-        <input
+      <SearchContainer>
+        <StyledFaSearch />
+        <Input
           type="text"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder="Search for recipes..."
         />
-      </div>
+      </SearchContainer>
     </Form>
   );
 };
 
 const Form = styled.form`
-  margin: 0 2rem;
+  display: flex;
+  justify-content: center;
+  margin: 2rem 0;
+`;
 
-  div {
-    position: relative;
-    width: min(550px, 100%);
-    margin: 0 auto;
+const SearchContainer = styled.div`
+  position: relative;
+  width: min(550px, 90%);
+  margin: 0 auto;
+`;
+
+const StyledFaSearch = styled(FaSearch)`
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #fff;
+  font-size: 20px;
+`;
+
+const Input = styled.input`
+  width: 100%;
+  padding: 10px 10px 10px 40px;
+  font-size: 1.2rem;
+  border-radius: 20px;
+  border: none;
+  outline: none;
+  background: linear-gradient(35deg, #494949, #313131);
+  color: #fff;
+  transition: background 0.3s ease;
+
+  &:focus {
+    background: linear-gradient(35deg, #313131, #494949);
   }
 
-  input {
-    background: linear-gradient(35deg, #494949, #313131);
-    font-size: 1.5rem;
-    color: #fff;
-    padding: 1rem 3rem;
-    border-radius: 0.5rem;
-    border: none;
-    outline: none;
-    width: 100%;
-  }
-
-  svg {
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translate(100%, -50%);
-    color: #fff;
+  &::placeholder {
+    color: #ccc;
   }
 `;
+
 export default Search;

@@ -2,12 +2,39 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const swaggerJsdoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
 
 // Initialize Express app
 const app = express();
+
+// Swagger set up
+const options = {
+  swaggerDefinition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'Recipe API',
+      version: '1.0.0',
+      description: 'API for managing recipes',
+      contact: {
+        name: 'lets cook Support',
+      },
+    },
+    servers: [
+      {
+        url: 'http://localhost:4000/',
+        description: 'Local server',
+      },
+    ],
+  },
+  apis: ['./routes/recipeRoutes.js','./routes/authRoutes.js'], // Path to the API docs
+};
+
+const specs = swaggerJsdoc(options);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
+
 app.use(cors()); // Assuming CORS is needed for all routes
 app.use(bodyParser.json());
-
 
 // Connect to MongoDB
 mongoose.connect('mongodb+srv://fakotrako321:pass123@recipes.dv2fhw8.mongodb.net/recipedB', {
@@ -23,17 +50,11 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-// BodyParser Middleware to parse JSON bodies
-app.use(bodyParser.json());
-
 // Import Routes
 const recipeRoutes = require('./routes/recipeRoutes'); // Adjust path as needed
 const authRoutes = require('./routes/authRoutes'); // Adjust path as needed
 app.use('/api/auth', authRoutes);
 app.use('/api/recipes', recipeRoutes);
-
-
-
 
 // Set the port and start the server
 const PORT = 4000;
@@ -42,10 +63,3 @@ app.listen(PORT, () => {
 });
 
 module.exports = app;
-
-
-
-
-
-
-

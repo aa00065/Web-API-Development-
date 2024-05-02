@@ -1,12 +1,10 @@
-import { useEffect, useState } from "react";
-import styled from "styled-components";
-import { useParams } from "react-router-dom";
+import React, { useEffect, useState } from 'react';
+import styled from 'styled-components';
+import { useParams } from 'react-router-dom';
 import axios from 'axios';
 
 const Recipesaved = () => {
   const [details, setDetails] = useState({});
-  const [activeTab, setActiveTab] = useState("instructions");
-
   const params = useParams();
 
   const fetchDetails = async () => {
@@ -24,14 +22,10 @@ const Recipesaved = () => {
 
   useEffect(() => {
     let isMounted = true;
-
     fetchDetails().then((data) => {
       if (isMounted) setDetails(data);
     });
-
-    return () => {
-      isMounted = false; // Clean up the effect
-    };
+    return () => { isMounted = false; };
   }, [params.id]);
 
   const removeRecipe = async () => {
@@ -46,95 +40,91 @@ const Recipesaved = () => {
 
   return (
     <Wrapper>
-      <div>
-        <h2>{details.title}</h2>
-        <img src={details.image} alt={details.title} />
-        <Button onClick={removeRecipe}>Remove Recipe</Button>
-      </div>
-      <Info>
-        <Button
-          className={activeTab === "ingredients" ? "active" : ""}
-          onClick={() => setActiveTab("ingredients")}
-        >
-          Ingredients
-        </Button>
-        <Button
-          className={activeTab === "instructions" ? "active" : ""}
-          onClick={() => setActiveTab("instructions")}
-        >
-          Instructions
-        </Button>
-        {activeTab === "ingredients" && (
-          <ul>
-            {details.extendedIngredients?.map(({ id, original }) => (
-              <li key={id}>{original}</li>
-            ))}
-          </ul>
-        )}
-        {activeTab === "instructions" && (
-          <div>
-            <p dangerouslySetInnerHTML={{ __html: details.summary }}></p>
-            <p dangerouslySetInnerHTML={{ __html: details.instructions }}></p>
-          </div>
-        )}
-      </Info>
+      <ContentArea>
+        <ImageWrapper>
+          <img src={details.image} alt={details.title} />
+        </ImageWrapper>
+        <Info>
+          <h2>{details.title}</h2>
+          <Button onClick={removeRecipe}>Remove Recipe</Button>
+          <Section>
+            <SectionTitle>Ingredients</SectionTitle>
+            <ul>
+              {details.extendedIngredients?.map(({ id, original }) => (
+                <li key={id}>{original}</li>
+              ))}
+            </ul>
+          </Section>
+          <Section>
+            <SectionTitle>Instructions</SectionTitle>
+            <div>
+              <p dangerouslySetInnerHTML={{ __html: details.summary }}></p>
+              <p dangerouslySetInnerHTML={{ __html: details.instructions }}></p>
+            </div>
+          </Section>
+        </Info>
+      </ContentArea>
     </Wrapper>
   );
 };
 
 const Wrapper = styled.div`
-  margin: 10rem inherit 5rem;
+  padding: 2rem;
   display: flex;
+  justify-content: center;
+`;
 
-  @media (max-width: 1068px) {
+const ContentArea = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  max-width: 1200px;
+  @media (max-width: 768px) {
     flex-direction: column;
+    align-items: center;
   }
+`;
 
-  .active {
-    background: linear-gradient(35deg, #494949, #313131);
-    color: #fff;
+const ImageWrapper = styled.div`
+  flex: 1 1 40%;
+  img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
   }
+`;
 
-  h2 {
-    margin-bottom: 2rem;
-  }
-
-  ul {
-    margin-top: 2rem;
-  }
-
-  li {
-    font-size: 1.2rem;
-    line-height: 2.5rem;
-  }
-
-  p {
-    margin: 1rem 0;
-    font-size: 1.1rem;
-    line-height: 1.8rem;
-
-    &:first-child {
-      margin-top: 2rem;
-    }
+const Info = styled.div`
+  flex: 1 1 60%;
+  padding-left: 20px;
+  @media (max-width: 768px) {
+    padding-left: 0;
+    padding-top: 20px;
   }
 `;
 
 const Button = styled.button`
-  padding: 1rem 2rem;
-  color: #313131;
-  background: #fff;
-  border: 2px solid #000;
-  margin-right: 2rem;
-  font-weight: 600;
+  padding: 10px 20px;
+  background-color: #333;
+  color: #FFF;
+  border: none;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  &:hover {
+    background-color: #555;
+  }
 `;
 
-const Info = styled.div`
-  margin-left: 5rem;
+const Section = styled.div`
+  margin-bottom: 20px;
+`;
 
-  @media (max-width: 1068px) {
-    margin-top: 3rem;
-    margin-left: 1rem;
-  }
+const SectionTitle = styled.h3`
+  color: #FFD700;
+  margin-bottom: 10px;
 `;
 
 export default Recipesaved;
